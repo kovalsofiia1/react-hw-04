@@ -6,7 +6,6 @@ const notify = () => toast('Make a search request.');
 export default function SearchBar({ onSubmit }) {
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(event);
         const query = event.target.elements.search.value.trim();
         if (query === '') {
             notify();
