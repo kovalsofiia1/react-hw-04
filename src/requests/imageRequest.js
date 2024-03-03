@@ -4,7 +4,7 @@ const BASE_LINK = `https://api.unsplash.com`;
 
 axios.defaults.baseURL = BASE_LINK;
 
-let per_page = 8;
+let per_page = 12;
 
 
 export const makeRequest = async (myquery, page) => {
@@ -16,12 +16,16 @@ export const makeRequest = async (myquery, page) => {
                     page: page,
                     per_page: per_page,
                     query: myquery,
+                    orientation: 'landscape',
 
                 }
             }
         )
-        console.log(responce)
-        return responce.data.results;
+        
+        return {
+            data: responce.data.results,
+            total_pages: responce.data.total_pages,
+        };
     }
     catch(error) {
         throw new Error('Error getting images!');

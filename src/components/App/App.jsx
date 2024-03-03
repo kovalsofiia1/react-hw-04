@@ -24,9 +24,9 @@ export default function App() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  
-  const [modalIsOpen, setIsOpen] = useState(false);
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeImg, setActiveImg] = useState(null);
+  let total_pages = useRef(1);
   useEffect(() => {
     if (query === '') return;
 
@@ -35,20 +35,17 @@ export default function App() {
         setLoading(true);
         setError(false);
 
-        const newImages = await makeRequest(query, page);
-        
-        console.log(newImages);
+        const responce = await makeRequest(query, page);
+        const newImages = responce.data;
+        total_pages.current = responce.total_pages;
        setImages((prevImages)=>[...prevImages ,...newImages]);
       } catch (error) {
         setError(true);
-        console.log(error);
       }
       finally {
         setLoading(false);
       }
-
     }
-    
     getImages();
   }, [query, page])
 
@@ -57,25 +54,20 @@ export default function App() {
     setImages([]);
     setQuery(query);
     setPage(1);
-    console.log(images);
   }
 
   const handleLoadMore = async () => {
     setPage(prevPage => prevPage + 1);
-    console.log(page);
-    console.log(images);
   }
 
-  function openModal(e) {
-    console.log(e);
+  function openModal() {
     setIsOpen(true);
-    console.log(modalIsOpen);
   }
 
   function closeModal() {
     setIsOpen(false);
   }
-  console.log(modalIsOpen);
+  const modalImg = images.filter((img) => img.id === activeImg);
   return (
     <>
       <SearchBar onSubmit={handleSubmit} />
@@ -84,13 +76,13 @@ export default function App() {
       <ErrorMessage />
     ) : (
       <>
-        {images.length > 0 && <ImageGallery images={images} onImageClick={ openModal} />}
+        {images.length > 0 && <ImageGallery images={images} onImageClick={openModal} getImg={setActiveImg} />}
         {loading && <Loader />}
-        {images.length > 0 && !loading && <LoadMoreBtn onLoad={handleLoadMore} />}
-          </>
+        {images.length > 0 && !loading && total_pages.current>page && <LoadMoreBtn onLoad={handleLoadMore} />}
+      </>
           
       )}
-      {modalIsOpen && <ImageModal closeModal={closeModal} />}
+      {isOpen && <ImageModal closeModal={closeModal} modalIsOpen={isOpen} info={modalImg[0]} />}
     </>
   )
 }
