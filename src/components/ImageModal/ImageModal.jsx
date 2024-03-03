@@ -5,11 +5,12 @@ import { FaHeart } from "react-icons/fa6";
 const customStyles = {
   content: {
     width: '70%',
-    height: '70%',
+    height: '80%',
     top: '50%',
     left: '50%',
     right: 'auto',
     bottom: 'auto',
+    fontSize:'18px',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     },
